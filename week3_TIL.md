@@ -308,7 +308,8 @@ GROUP BY ALL
 * 생산성 도구를 만들 수 있다.
 ~~~
 
-<!-- 이어질 주차에서 생산성 도구를 활용한 실습이 있습니다.강의에 맞게 제작하여 화면을 캡쳐하여 이 주석을 지우고 올려주세요. -->
+<img width="883" height="831" alt="image" src="https://github.com/user-attachments/assets/3cb4ed85-19d9-4989-9d8d-daaf2012c09b" />
+
 
 
 
@@ -319,7 +320,8 @@ GROUP BY ALL
 
 # 2️⃣ 학습 인증란
 
-<img width="403" height="814" alt="image" src="https://github.com/user-attachments/assets/574a85b8-9440-4d8d-baaf-1ef65d64f76a" />
+<img width="403" height="873" alt="image" src="https://github.com/user-attachments/assets/5d268bd9-6249-4908-94bb-b0e37a7ee2ad" />
+
 
 
 
