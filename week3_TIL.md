@@ -319,7 +319,8 @@ GROUP BY ALL
 
 # 2️⃣ 학습 인증란
 
-<!-- 이 글을 지우고, 여기에 학습한 것을 인증해주세요.-->
+<img width="403" height="814" alt="image" src="https://github.com/user-attachments/assets/574a85b8-9440-4d8d-baaf-1ef65d64f76a" />
+
 
 
 
@@ -357,7 +358,13 @@ ORDER BY (ㄱ) (ㄹ);
 
 
 ~~~
-여기에 답을 작성해주세요!
+SELECT
+  type1,
+  AVG(attack) AS avg_attack
+FROM basic.pokemon
+WHERE attack >= 50
+GROUP BY type1
+ORDER BY avg_attack DESC;
 ~~~
 
 
