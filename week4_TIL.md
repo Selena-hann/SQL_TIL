@@ -161,13 +161,13 @@ UPPER(문자열 원본)
 * 시간함수들의 종류와 시간의 차이를 추출하는 방법을 설명할 수 있다. 
 ~~~
 
-- 타임존
+타임존
 - UTC: Universal Time Coordinated(한국 시간: UTC+9)
 - 국제적인 표준 시간
 - 협정 세계시
 - 타임존이 존재한다 = 특정 지역의 표준 시간대
 
-- TIMESTAMP
+TIMESTAMP
 - 시간 도장
 - UTC부터 경과한 시간을 나타내는 값
 - Time Zone 정보 있음
@@ -175,6 +175,7 @@ UPPER(문자열 원본)
 
 millisecond(ms)
 - 시간의 단위, 천 분의 1초
+
 microsecond
 - 1/1,000ms
 
@@ -209,11 +210,36 @@ SELECT
 >
 > :  https://school.programmers.co.kr/learn/courses/30/lessons/144853
 
-<!-- 문제를 풀기 위하여 로그인이  필요합니다. -->
+~~~
+처음 오답
 
-<!-- 정답을 맞추게 되면, 정답입니다. 라는 칸이 생성되는데 이 부분을 캡처해서 이 주석을 지우시고 첨부해주시면 됩니다. --> 
+SELECT
+    BOOK_ID,
+    PUBLISH_DATE
+FROM BOOK
+WHERE
+    DATE(YEAR)=2021
+    CATEGORY="인문"
+ORDER BY
+    PUBLISH_DATE ASC;
+~~~
 
+<img width="1639" height="602" alt="image" src="https://github.com/user-attachments/assets/7bacc368-34b2-4468-8d5b-56a648da8cbb" />
 
+~~~
+정답
+SELECT
+    BOOK_ID,
+    DATE_FORMAT(PUBLISHED_DATE, '%Y-%m-%d') AS PUBLISHED_DATE
+FROM BOOK
+WHERE
+    YEAR(PUBLISHED_DATE)=2021
+    AND CATEGORY='인문'
+ORDER BY
+    PUBLISHED_DATE ASC;
+~~~
+
+- 겹치는 조건일 경우 AND 사용, 문자는 '', DATE format이 DB 내부에서 시간까지 포함할 수 있으므로 결과를 보았을 때 포맷을 맞춰야함.
 
 ## 문제 1
 
@@ -233,7 +259,10 @@ WHERE CATEGORY = '인문'
 
 
 ~~~
-여기에 답을 작성해주세요!
+YEAR 함수에 인자가 제대로 들어가지 않았다는 뜻이다.
+YEAR()=2021 형태로 바꾸어야하고 ()안에는 컬럼명이 들어가야 한다.
+
+YEAR(PUBLISHED_DATE)=2021
 ~~~
 
 
