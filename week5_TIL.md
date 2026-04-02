@@ -58,8 +58,35 @@
 * CURRENT_TIME, EXTRACT, DATETIME_TRUNC, PARSE_DATETIME, FROMAT_DATETIME 을 설명할 수 있다. 
 ~~~
 
-<!-- 새롭게 배운 내용을 자유롭게 정리해주세요.-->
+- CURRENT_DATETIME
+~~~
+CURRENT_DATETIME([time_zone]): 현재 DATETIME 출력
 
+SELECT
+ CURRENT_DATE() AS current_date,
+ CURRENT_DATE("ASIA/SEOUL") AS asia_date,
+ CURRENT_DATETIME() AS current_datetime,
+ CURRENT_DATETIME("Asia/Seoul") AS current_datetime_asia;
+~~~
+
+- EXTRACT: DATETIME에서 특정 부분만 추출하고 싶은 경우
+~~~
+SELECT
+ EXTRACT(DATE FROM DATETIME ("2024-01-02 14:00:00") AS date,
+ EXTRACT (YEAR FROM DATETIME ("2024-01-03 14:00:00") AS year)
+~~~
+
+- DATETIME_TRUNC: DATE, HOUR만 남기고 싶은 경우 => 시간 자르기
+~~~
+DATETIME_TRUNC(datetime_col,HOUR)
+2024-01-02 14:42:14을 hour로 자르면
+2024-01-02 14:00:00
+~~~
+
+- PARSE_DATETIME: 문자열로 저장된 DATETIME을 DATETIME 타입으로 바꾸고 싶은 경우
+- FORMAT_DATETIME: DATETIME 타입 데이터를 특정 형태의 문자열 데이터로 변환하고 싶은 경우
+- LAST_DAY(DATETIME): 월의 마지막 값을 반환
+- DATETIME_DFF: 두 DATETIME의 차이를 알고 싶은 경우 (첫 DATETIME, 두번째 DATETIME, 궁금한 차이)
 
 
 # 4-6. 조건문(CASE WHEN, IF)
@@ -69,9 +96,34 @@
 * 조건문 함수의 기능을 이해하고, 설명할 수 있다. 
 ~~~
 
-<!-- 새롭게 배운 내용을 자유롭게 정리해주세요.-->
+- 조건문: 특정 조건이 참일 때 A, 아니면 B
+- 사용 이유: 데이터 분석을 하다보면, 특정 카테고리를 하나로 합치는 전처리가 필요함, 보통 저장보다 분석할 때 필요한 부분에서 조건 설정에서 변경하는 것이 더 유용함.
 
+- CASE WHEN
+~~~
+SELECT
+ CASE
+  WHEN 조건1 THEN 조건1이 참일 경우 결과
+  WHEN 조건2 THEN 조건2가 참일 경우 결과
+  ELSE 그 외 조건일 경우 결과
+END AS 새로운 컬럼 이름
+~~~
+~~~
+SELECT
+ new_type1,
+ COUNT(DISTINCT id) AS cnt
+ CASE
+  WHEN (type1 IN("Rock","Ground") OR type2 IN ("Rock","Ground")) THEN "Rock&Ground"
+ ELSE type1
+ END AS new_type1 
+FROM basic.pokemon
+)
+GROUP BY
+ new_type1
+~~~
 
+- CASE WHEN: 여러 조건이 있을 경우 사용, 조건의 순서에 주의
+- IF: 단일 조건일 경우 사용
 
  # 4-5. 시간 데이터 연습문제 & 4-7. 조건문 연습 문제
 
@@ -80,9 +132,106 @@
 * 4-5, 4-7 각각에서 두 문제 이상 (최소 4문제) 푼 내용 정리하기
 ~~~
 
-<!-- 새롭게 배운 내용을 자유롭게 정리해주세요.-->
+1
+~~~
+#0. 데이터 검증을 위한 쿼리
+SELECT
+ *
+FROM (
+SELECT
+ id,
+ catch_date,
+ DATE(DATETIME(catch_datetime, "Asia/Seoul")) AS catch_datetime_kr_date
+FROM basic.trainer_pokemon
+)
+WHERE
+ catch_date!=catch_datetime_kr_date
+#컬럼의 설명을 꼭 확인하고 sql 작성해야함!
 
+SELECT
+ COUNT(DISTINCT id) AS cnt
+FROM basic.trainer_pokemon
+WHERE
+ EXTRACT(YEAR FROM DATETIME(catch_datetime, "Asia/Seoul"))=2023
+ AND EXTRACT(MONTH FROM DATETIME(catch_datetime, "Asia/Seoul"))=1
 
+#컬럼 꼭 파악하고 정의확인 후 쿼리를 작성하자!
+~~~
+
+2
+~~~
+#0 battle_datetime, battle_timestamp 검증
+SELECT
+ id,
+ battle_datetime,
+ DATETIME(battle_timestamp, "Asia/Seoul") AS battle_timestamp_kr,
+ COUNTIF(battle_datetime=DATETIME(battle_timestamp, "Asia/Seoul")) AS batle_Datetime_same_battle_timestamp_kr
+ COUNTIF(battle_datetime != DATETIME(battle_timestamp, "Asia/Seoul")) AS battle_datetime_not_same_battle_timestamp_kr
+FROM basic.battle
+
+SELECT
+ COUNT(DISTINCT id) AS battle_cnt
+FROM basic.battle
+WEHRE
+ EXTRACT(HOUR FROM battle_datetime)>=6
+ AND EXTRACT(HOUR FROM battle_datetime)<=18
+~~~
+
+3
+~~~
+SELECT
+ trainer_id,
+ FORMAT_DATE("%d/%m%/Y",min_catch_date) AS new_min_catch_date
+FROM(
+SELECT
+ trainer_id,
+ MIN(DATE(catch_datetime,"Asia/Seoul")) AS min_catch_date
+FROM basic.trainer_pokemon
+GROUP BY
+ trainer_id
+)
+ORDER BY
+ trainer_id 
+#날짜의 첫날을 찾은 후 특정 형태로 바꾸는 것이 좋음!
+#ORDER BY 위치는 SELECT의 가장 바깥에서 실행하는 것이 좋음
+~~~
+
+4
+~~~
+SELECT
+ day_of_week,
+ COUNT(DISTINCT id) AS battle_cnt
+FROM(
+ SELECT
+  *
+  EXTRACT(DAYOFWEEK FROM battle_date) AS day_of_week
+ FROM basic.battle
+)
+GROUP BY
+ day_of_week
+ORDER BY
+ day_of_week
+~~~
+
+5
+~~~
+SELECT
+  *
+  DATETIME_DIFF(max_catch_datetime, min_catch_datetime, DAY) AS diff
+FROM(
+SELECT
+ trainer_id,
+ MIN(DATETIME(catch_datetime,"Asia/Seoul")) AS min_catch_datetime,
+ MAX(DATETIME(catch_datetime,"Asia/Seoul")) AS max_catch_datetime
+FROM basic.trainer_pokemon
+GROUP BY
+ trainer_id
+)
+ORDER BY
+ diff DESC
+
+#날짜 차이 또한 검증하는 과정이 필요함
+~~~
 
 <br>
 
