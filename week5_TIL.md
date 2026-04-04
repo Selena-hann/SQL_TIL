@@ -232,6 +232,7 @@ ORDER BY
 
 #날짜 차이 또한 검증하는 과정이 필요함
 ~~~
+<img width="423" height="724" alt="image" src="https://github.com/user-attachments/assets/2ff2b8a2-35af-4317-9b8a-2635d8464fe5" />
 
 <br>
 
@@ -278,7 +279,29 @@ ORDER BY
 <!-- 틀린쿼리에 대한 오류의 원인도 같이 작성해주세요. 문제에서 제공된 order_time 컬럼은 DATETIME type의 데이터를 가지고 있다고 가정합니다. -->
 
 ~~~
-여기에 답을 작성해주세요!
+2번
+:GROUP BY 기준이 시 단위로 묶고 싶은 의도와 달리 실제로는 원본 order_time 값별로 그룹화하고 있음.
+*수정본
+SELECT
+ DATETIME_TRUNC(order_time, HOUR) AS truncated_hour,
+ COUNT(*)
+FROM order_log
+WHERE order_time >= '2021-01-01' AND order_time < '2022-01-01'
+GROUP BY truncated_hour;
+
+
+4번
+:CASE 문이 끝날 때 END 누락됨.
+
+*수정본
+SELECT
+ CASE
+  WHEN EXTRACT(HOUR FROM order_time) BETWEEN 0 AND 11 THEN '오전'
+  ELSE '오후'
+ END AS time_group,
+ COUNT(*)
+FROM order_log
+GROUP BY time_group;
 ~~~
 
 
@@ -309,7 +332,9 @@ FROM pokemon;
 <!-- 근거와 함께 답을 작성해주세요 -->
 
 ~~~
-여기에 답을 작성해주세요!
+Pikachum, Bulbasaur
+type1이 Fire이면 Hot, Water이면 Cool로 출력되므로
+그 이외의 type1을 가진 포켓몬은 Normal로 출력된다.
 ~~~
 
 
