@@ -55,9 +55,26 @@
 * JOIN에 대한 정의와 필요성에 대해 설명할 수 있다.
 ~~~
 
-<!-- 새롭게 배운 내용을 자유롭게 정리해주세요.-->
+SQL JOIN
+- SQL을 처음 배울 때, 어려울 수 있는 부분
+- 간단하게 "서로 다른 데이터 테이블을 연결하는 것"
+- 많은 문제 풀이를 통한 체화
+- 공통적으로 존재하는 컬럼(=key)이 있다면, JOIN할 수 있음
+- 보통 id 값을 key로 많이 사용하고, 특정 범위(예:Date)로 JOIN도 가능함
 
+~~~
+트레이너가 포획한 포켓몬 기준으로 트레이너 데이터를 연결하기 (JOIN)
+연결할 수 있는 Key=trainer_id,id
+trainer_id 컬럼 기준으로 트레이너 데이터를 연결
+~~~
 
+JOIN을 해야하는 이유 - 데이터 저장되는 형태에 대한 이해
+- 관계형 데이터베이스(RDBMS) 설계 시 정규화 과정을 거침
+- 정규화는 중복을 최소화하게 데이터를 구조화
+- User Table은 유저 데이터만, Order table은 주문 데이터만
+- 따라서 데이터를 다양한 table에 저장해서 필요할 때 join해서 사용
+- 데이터 분석하는 관점에선 미리 JOIN되어 있는 것이 좋지만, 개발 관점에선 분리되어 있는 것이 좋음
+- 대신 데이터 웨어하우스에서 JOIN+필요한 연산을 해서 "데이터 마트"를 만들어서 활용
 
 ## 5-3. 다양한 JOIN 방법
 
@@ -67,8 +84,10 @@
 * 각 JOIN 방법들의 차이점에 대해서 설명할 수 있다. 
 ~~~
 
-<!-- 새롭게 배운 내용을 자유롭게 정리해주세요.-->
-
+- (INNER) JOIN: 두 테이블의 공통 요소만 연결
+- LEFT/RIGHT (OUTER) JOIN: 왼쪽/오른쪽 테이블 기준으로 연결
+- FULL (OUTER) JOIN: 양쪽 기준으로 연결
+- CROSS JOIN: 두 테이블의 각각의 요소를 곱하기
 
 
 ## 5-4. JOIN 쿼리 작성하기 
@@ -79,9 +98,42 @@
 * JOIN 을 활용한 쿼리를 작성할 수 있다. 
 ~~~
 
-<!-- 새롭게 배운 내용을 자유롭게 정리해주세요.-->
+~~~
+1. 테이블 확인: 테이블에 저장된 데이터, 컬럼 확인
+2. 기준 테이블 정의: 가장 많이 참고할 기준(base) 테이블 정의
+3. JOIN Key 찾기: 여러 Table과 연결할 key(ON) 정리
+4. 결과 예상하기: 결과 테이블을 예상해서 손, 엑셀로 작성(일종의 정답지 역할)
+5. 쿼리 작성/검증: 예상한 결과와 동일한 결과가 나오는지 확인
+~~~
+~~~
+FROM 하단에 JOIN할 Table을 작성하고
+ON 뒤에 공통된 컬럼(key)를 작성
 
-
+SELECT
+  A.col1,
+  A.col2,
+  B.col1 1,
+  B.col1 2
+FROM table1 AS A
+LEFT JOIN table2 AS B
+ON A.key=B.key
+~~~
+~~~
+예시
+SELECT
+  tp.id,
+  tp.trainer_id,
+  tp.pokemon_id,
+  t.id AS trainer_id,
+  t.age,
+  t.hometown
+  p.*
+FROM basic.trainer_pokemon AS tp
+LEFT JOIN basic.trainer AS t
+ON tp.trainer_id=t.id
+LEFT JOIN basic.pokemoon AS p #위에까지를 하나의 테이블로 인식
+ON tp.pokemon_id=p.id
+~~~
 
 ## 5-6. JOIN 연습문제 1~5번 
 
@@ -90,8 +142,48 @@
 * 연습문제(3문제 이상) 푼 것들 정리하기
 ~~~
 
-<!-- 새롭게 배운 내용을 자유롭게 정리해주세요.-->
+1
+~~~
+#연산량 관점에서 필터링 먼저 해서 row 수를 줄이고 JOIN 하는게 효율적임.
+#table을 그대로 사용해야 하는가, 혹은 줄이고 쓰는게 내 목적에 맞는가 확인하기!
+#JOIN에서 사용하는 테이블에 중복된 컬럼 이름 있으면 꼭 어떤 테이블의 컬럼인지 명시해야 함.
 
+SELECT
+  kor_name,
+  COUNT(tp.id) AS pokemon_cnt
+FROM(
+SELECT
+  id,
+  trainer_id,
+  pokemon_id,
+  status
+FROM basic.trainer_pokemon
+WHERE
+  status IN ("Active", "Training")
+) AS tp
+LEFT JOIN basic.pokemon AS p
+ON tp.pokemon_id=p.id
+GROUP BY
+  kor_name
+ORDER BY
+   pokemon_cnt DESC
+~~~
+
+2
+~~~
+~~~
+
+3
+~~~
+~~~
+
+4
+~~~
+~~~
+
+5
+~~~
+~~~
 
 
 <br>
