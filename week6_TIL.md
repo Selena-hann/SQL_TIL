@@ -171,19 +171,78 @@ ORDER BY
 
 2
 ~~~
+SELECT
+  tp.*,
+  p.type1
+  COUNT(tp.id) AS pokemon_Cnt
+FROM (
+  SELECT
+    id,
+    trainer_id,
+    pokemon_id,
+    status
+  FROM basic.trainer_pokemon
+  WHERE
+    status IN ("Active","Training")
+) AS tp
+LEFT JOIN basic.pokemon AS p
+ON tp.pokemon_id=p.id
+WHERE
+  type1="Grass"
+GROUP BY
+  type1
+ORDER BY
+  2 DESC
 ~~~
 
 3
 ~~~
+SELECT
+  COUNT(DISTINCT tp.trainer_id) AS trainer_uniq,
+FROM basic.trainer_pokemon AS tp
+LEFT JOIN basic.trainer AS t
+ON t.id=tp.trainer_id
+WHERE
+  tp.location IS NOT NULL
+  AND t.hometown = tp.location
+
+-trainer엔 특정 트레이너의 정보가 1개 들어있음(1 row = 1 data)
+-JOIN을 하다보면 RIGHT에서 LEFT의 기준에 여러개가 있을 때 데이터가 더 많아지는 것처럼 보임
+-trainer_pokemon에 Goh가 6마리 포켓몬을 가지고 있어서 이렇게 결과가 합쳐진 것임
+-LEFT에 메타 정보를 두면 헷갈릴 수 있음
+-trainer 중에 포켓몬을 잡아보지 못한 trainer가 있으면 NULL 조건을 걸어줘야 함
 ~~~
 
 4
 ~~~
+SELECT
+  type1,
+  COUNT(tp.id) AS pokemon_Cnt
+FROM(
+  SELECT
+    id,
+    trainer_id,
+    pokemon_id,
+    status
+  FROM basic.trainer_pokemon
+  WHERE
+    status IN ("Active","Training")
+) AS tp
+LEFT JOIN basic.pokemon AS p
+ON tp.pokemon_id=p.id
+LEFT JOIN basic.trainer AS t
+ON tp.trainer_id=t.id
+WHERE
+  t.achievement_level="Master"
+GROUP BY
+  type1
+ORDER BY
+  2 DESC
+LIMIT 1
+
+-LEFT JOIN을 N번 연속으로 사용 가능하다
 ~~~
 
-5
-~~~
-~~~
 
 
 <br>
@@ -204,7 +263,10 @@ https://school.programmers.co.kr/learn/courses/30/lessons/133027
 
 > 주문량이 많은 아이스크림들 조회하기
 
-<!-- 정답을 맞추게 되면, 정답입니다. 이 부분을 캡처해서 이 주석을 지우시고 첨부해주시면 됩니다. --> 
+<img width="1710" height="1069" alt="image" src="https://github.com/user-attachments/assets/f1e9fab4-c2da-4920-84a8-dc83be4dc225" />
+<img width="1710" height="1069" alt="image" src="https://github.com/user-attachments/assets/8ba28876-c358-488c-9dba-066988369e3b" />
+
+
 
 
 
