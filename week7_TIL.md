@@ -166,9 +166,9 @@ https://leetcode.com/problems/list-the-products-ordered-in-a-period/
 > 585. Investments in 2016
 
 
-
-<!-- 정답을 맞추게 되면, 정답입니다. 이 부분을 캡처해서 이 주석을 지우시고 첨부해주시면 됩니다. --> 
-
+<img width="1710" height="1069" alt="image" src="https://github.com/user-attachments/assets/17a40e07-2dfa-4967-be13-f7a1245a192a" />
+<img width="1710" height="1069" alt="image" src="https://github.com/user-attachments/assets/5b3619c1-cff3-4ce2-9c4c-ec6a708d9718" />
+<img width="1710" height="1069" alt="image" src="https://github.com/user-attachments/assets/0bd79f77-c2b2-4c69-b2f7-02323ec61180" />
 
 
 ## 문제 1
@@ -191,7 +191,21 @@ where u.region= 'Busan'			order by o.OrderID
 
 
 ~~~
-여기에 답을 작성해주세요.
+SELECT
+  u.name,
+  o.OrderID,
+  p.ProductName,
+  od.Quantity,
+  od.UnitPrice
+FROM Users u
+JOIN Orders o
+  ON u.id = o.userID
+JOIN OrderDetails od
+  ON o.OrderID = od.orderID
+JOIN Products p
+  ON od.ProductID = p.ProductID
+WHERE u.region = 'Busan'
+ORDER BY o.OrderID;
 ~~~
 
 ---
